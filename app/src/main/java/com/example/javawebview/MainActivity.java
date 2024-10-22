@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WebView myWebView = (WebView) findViewById(R.id.webview);
+        WebView myWebView = findViewById(R.id.webview);
 
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -25,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         String address = getString(R.string.address);
         String protocol = getString(R.string.protocol);
-        String url = protocol + address;
+        String port = getString(R.string.port);
+        String url = protocol + address + port;
 
         myWebView.loadUrl(url);
     }
