@@ -1,8 +1,10 @@
 package com.example.javawebview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -20,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        myWebView.setWebViewClient(new WebViewClient());
+        myWebView.setWebViewClient(new MyWebViewClient());
         myWebView.addJavascriptInterface(new WebAppInterface(this), "Android");
 
         String address = getString(R.string.address);
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         myWebView.loadUrl(url);
     }
 
+    // @link https://developer.android.com/develop/ui/views/layout/webapps/webview#UsingJavaScript
     public class WebAppInterface {
         Context mContext;
 
@@ -41,6 +44,24 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void showToast(String toast) {
             Toast.makeText(mContext, toast, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // @link https://developer.android.com/develop/ui/views/layout/webapps/webview#HandlingNavigation
+    private class MyWebViewClient extends WebViewClient {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            if (getString(R.string.address).equals(request.getUrl().getHost())) {
+                // This is your website, so don't override. Let your WebView load the
+                // page.
+                return false;
+            }
+
+            // Otherwise, the link isn't for a page on your site, so launch another
+            // Activity that handles URLs.
+            Intent intent = new Intent(Intent.ACTION_VIEW, request.getUrl());
+            startActivity(intent);
+            return true;
         }
     }
 }
